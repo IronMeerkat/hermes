@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../hephaestus",
+			"name": "hephaestus"
+		}
+	],
+	"settings": {
+		"python.analysis.extraPaths": [
+			"../hephaestus/src"
+		],
+		"folder-color.pathColors": []
+	}
+}

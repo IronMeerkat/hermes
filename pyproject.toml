@@ -1,0 +1,19 @@
+[project]
+name = "hermes"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chainlit>=2.9.6",
+    "hephaestus",
+    "langchain>=1.2.7",
+    "langchain-anthropic>=1.3.1",
+    "livepopulartimes",
+    "telethon>=1.42.0",
+    "yfinance>=1.1.0",
+]
+
+[tool.uv.sources]
+hephaestus = { path = "../hephaestus", editable = true }
+livepopulartimes = { git = "https://github.com/GrocerCheck/LivePopularTimes.git" }
