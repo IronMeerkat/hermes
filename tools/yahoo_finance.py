@@ -13,13 +13,13 @@ from pydantic import Field
 
 logger = getLogger(__name__)
 
-llm = ChatAnthropic(model="claude-sonnet-4-5", anthropic_api_key=settings.ANTHROPIC_API_KEY, temperature=0.1)
 
 finance_tools: List[Tool] = []
 
 
 def finance_tool(func):
     tool = core_tool(func)
+    # finance_tools[tool.name] = tool
     finance_tools.append(tool)
     return tool
 

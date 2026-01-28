@@ -36,5 +36,6 @@ async def _check_telegram_channels() -> list:
 
 @tool
 def check_telegram_channels() -> list[str]:
+    """Check the latest messages from the Telegram channels"""
     return asyncio.run(_check_telegram_channels())
 
