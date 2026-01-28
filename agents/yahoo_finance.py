@@ -1,15 +1,14 @@
-from langchain.messages import (
-    AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
-)
-from typing_extensions import TypedDict, Annotated
 import operator
 
+from langchain.agents import create_agent
+from langchain.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain.tools import tool
 from langchain_anthropic import ChatAnthropic
+from typing_extensions import Annotated, TypedDict
+
 from hephaestus.langfuse_handler import langfuse_callback_handler
 
 from tools.yahoo_finance import finance_tools
-from langchain.agents import create_agent
 
 
 _model = ChatAnthropic(model="claude-sonnet-4-5", temperature=0.1)

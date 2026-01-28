@@ -1,22 +1,13 @@
-"""
-Truth Social API integration using truthbrush.
-
-Fetches Trump's posts (truths) from Truth Social.
-
-NOTE: Truth Social uses aggressive Cloudflare protection. If you encounter
-403 errors, you may need to:
-1. Use a residential proxy
-2. Provide a pre-authenticated token via settings.truth_social.token
-3. Run from a network that isn't flagged by Cloudflare
-"""
+import re
 from datetime import datetime, timedelta, timezone
 from html import unescape
 from logging import getLogger
-import re
 
-from hephaestus.settings import settings
 from langchain_core.tools import tool
 from truthbrush import Api
+
+from hephaestus.langfuse_handler import langfuse
+from hephaestus.settings import settings
 
 logger = getLogger(__name__)
 
@@ -110,15 +101,11 @@ def get_trump_truths_last_24h() -> list[str]:
     """
     Get all of Donald Trump's Truth Social posts from the last 24 hours.
 
-    Use this tool when you need to know what Trump has posted on Truth Social recently.
-    This can be useful for tracking political statements, announcements, or policy hints.
-
-    Returns:
-        List of strings containing the text content of each truth from the last 24 hours.
-        Returns an empty list if no truths were posted in that timeframe or if there's an error.
     """
     try:
         return _get_truths_last_24h(TRUMP_USERNAME)
     except Exception as e:
         logger.exception(f"❌ Failed to get Trump's truths: {e}")
         return []
+
+get_trump_truths_last_24h.description = langfuse.get_prompt("trump-truth-desc").prompt

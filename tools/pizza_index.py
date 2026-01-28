@@ -1,14 +1,17 @@
-import livepopulartimes
-import requests
-import warnings
-from logging import getLogger
-from datetime import datetime
-from hephaestus.settings import settings
 import time
-from pytz import timezone
+import warnings
+from datetime import datetime
+from logging import getLogger
 
 from langchain_core.tools import tool
+import livepopulartimes
 import pandas as pd
+from pytz import timezone
+import requests
+
+from hephaestus.langfuse_handler import langfuse
+from hephaestus.settings import settings
+
 
 logger = getLogger(__name__)
 
@@ -19,7 +22,6 @@ logger = getLogger(__name__)
 PENTAGON_LAT = 38.8719
 PENTAGON_LNG = -77.0563
 RADIUS_METERS = 3000  # 3km radius
-
 
 def get_current_hour_baseline(populartimes_data: list | None) -> int | None:
     """Extract the baseline busyness for current day/hour from populartimes data."""
@@ -178,34 +180,15 @@ def fetch_pentagon_restaurants(max_restaurants: int = 30) -> list[dict]:
         if result:
             enriched_places.append(result)
 
-    logger.info(f"✅ Got data for {len(enriched_places)} restaurants")
-
-    # Count how many have popularity data
-    with_popularity = sum(1 for p in enriched_places if p.get("current_popularity") is not None)
+    logger.debug(f"✅ Got data for {len(enriched_places)} restaurants")
 
     return enriched_places
 
 
 @tool
-def get_pentagon_restaurants_activity_spike():
+def pentagon_activity_spike():
     """
     Pentagon Overtime Signal (Restaurant Activity Spike Index).
-
-    Use this when you want an *early warning heuristic* for unusual, sustained overtime
-    activity at/near the Pentagon: if many nearby restaurants are simultaneously much
-    busier than their typical baseline for this time, it can indicate people are working
-    late (i.e., something significant may be underway).
-
-    What it does:
-    - Fetches up to ~30 top-rated restaurants within a fixed radius of the Pentagon.
-    - Computes an "activity spike" per restaurant as:
-    - current_popularity / typical_popularity_for_this_time
-    - Returns the mean spike across restaurants as a **stringified float**.
-
-    Return values:
-    - A numeric string (e.g. "1.25"): average spike (higher => more unusual busyness).
-    - "Not relevant": outside weekday work hours (Monday-Friday, 8am-6pm US/Eastern).
-    - "ERROR": failed to compute (check logs for the exception).
     """
     logger.info("🍕 Starting Pentagon Restaurant Busyness Index...")
 
@@ -228,3 +211,4 @@ def get_pentagon_restaurants_activity_spike():
         logger.exception(f"❌ Script failed: {e}")
         return "ERROR"
 
+pentagon_activity_spike.description = langfuse.get_prompt("pizzaint-description").prompt

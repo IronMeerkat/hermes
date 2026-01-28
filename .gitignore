@@ -10,3 +10,4 @@ wheels/
 .venv
 settings.yaml
 .cursor/debug.log
+*.session
