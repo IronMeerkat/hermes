@@ -1289,6 +1289,7 @@ dependencies = [
     { name = "livepopulartimes" },
     { name = "telethon" },
     { name = "truthbrush" },
+    { name = "uvicorn" },
     { name = "yfinance" },
 ]
 
@@ -1303,6 +1304,7 @@ requires-dist = [
     { name = "livepopulartimes", git = "https://github.com/GrocerCheck/LivePopularTimes.git" },
     { name = "telethon", specifier = ">=1.42.0" },
     { name = "truthbrush", git = "https://github.com/stanfordio/truthbrush.git" },
+    { name = "uvicorn", specifier = ">=0.40.0" },
     { name = "yfinance" },
 ]
 

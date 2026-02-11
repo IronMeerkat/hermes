@@ -12,6 +12,17 @@
             "args": ["run", "demo.py", "--host", "0.0.0.0", "-w"],
             "console": "integratedTerminal",
             "justMyCode": true
+        },{
+            "name": "FastAPI: main.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONDONTWRITEBYTECODE": "1",
+                "PYTHONUNBUFFERED": "1"
+            }
         }
     ]
 }
