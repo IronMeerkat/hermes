@@ -15,6 +15,7 @@ dependencies = [
     "telethon>=1.42.0",
     "truthbrush",
     "uvicorn>=0.40.0",
+    "xai-sdk>=1.10.0",
     "yfinance",
 ]
 

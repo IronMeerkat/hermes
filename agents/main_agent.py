@@ -9,29 +9,41 @@ from typing_extensions import Annotated, TypedDict
 
 from hephaestus.langfuse_handler import langfuse, langfuse_callback_handler
 
+from agents.xai_multiagent import (
+    grok_multi_agent_research_agent,
+    grok_multi_agent_subagent_description,
+)
 from agents.yahoo_finance import financial_analyst_agent
 from tools.pizza_index import pentagon_activity_spike
 from tools.telegram_feeds import check_telegram_channels
 
+
 logger = getLogger(__name__)
 
-model = ChatXAI(model="grok-4-1-fast-reasoning", temperature=1, callbacks=[langfuse_callback_handler])
+model = ChatXAI(model="grok-4.20-0309-reasoning", temperature=1, callbacks=[langfuse_callback_handler])
 
 financial_analyst_description = langfuse.get_prompt("financial-analyst-description").prompt
-osing_prompt = langfuse.get_prompt("osint-prompt").prompt
+osint_prompt = langfuse.get_prompt("osint-prompt").prompt
 
 tools = [pentagon_activity_spike, check_telegram_channels]
 subagents = [
-    CompiledSubAgent(name="financial-analyst",
-                     description=financial_analyst_description,
-                     runnable=financial_analyst_agent)
-    ]
+    CompiledSubAgent(
+        name="financial-analyst",
+        description=financial_analyst_description,
+        runnable=financial_analyst_agent,
+    ),
+    CompiledSubAgent(
+        name="grok-multi-agent-research",
+        description=grok_multi_agent_subagent_description,
+        runnable=grok_multi_agent_research_agent,
+    ),
+]
 
 class MainAgentState(TypedDict):
     messages: Annotated[list[AnyMessage], operator.add]
 
 main_agent = create_deep_agent(
     model=model,
-    system_prompt=osing_prompt,
+    system_prompt=osint_prompt,
     tools=tools,
     subagents=subagents)

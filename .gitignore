@@ -11,3 +11,4 @@ wheels/
 settings.yaml
 .cursor/debug.log
 *.session
+sandbox.ipynb

@@ -165,19 +165,19 @@ def fetch_pentagon_restaurants(max_restaurants: int = 30) -> list[dict]:
         return []
 
     # Limit to top-rated restaurants for efficiency
-    places_with_rating = [p for p in places if p.get("rating")]
-    places_with_rating.sort(key=lambda x: (x.get("rating", 0), x.get("user_ratings_total", 0)), reverse=True)
-    places_to_fetch = places_with_rating[:max_restaurants]
+    places = [p for p in places if p.get("rating")]
+    places.sort(key=lambda x: (x.get("rating", 0), x.get("user_ratings_total", 0)), reverse=True)
+    # places = places[:max_restaurants]
 
-    logger.debug(f"🔄 Phase 2: Fetching popularity data for top {len(places_to_fetch)} restaurants...")
+    logger.debug(f"🔄 Phase 2: Fetching popularity data for top {len(places)} restaurants...")
 
     # Phase 2: Fetch popularity data using LivePopularTimes (by place_id)
     enriched_places = []
 
-    for i, place in enumerate(places_to_fetch):
+    for i, place in enumerate(places):
 
         result = fetch_popularity_for_place(api_key, place)
-        if result:
+        if result and result["populartimes"] and result["current_popularity"]:
             enriched_places.append(result)
 
     logger.debug(f"✅ Got data for {len(enriched_places)} restaurants")
@@ -203,6 +203,8 @@ def pentagon_activity_spike():
     try:
         places = fetch_pentagon_restaurants(max_restaurants=30)
         df = pd.DataFrame(places)
+        logger.info(f"🍕 Pentagon Restaurant Busyness Index: {df['current_popularity']}, {df['populartimes']}")
+        logger.info(f"types: {df.dtypes}")
         activity_spike = df['current_popularity'].astype(float) / df['populartimes'].astype(float)
 
         return str(activity_spike.mean())
